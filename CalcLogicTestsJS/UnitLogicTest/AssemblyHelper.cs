@@ -1,31 +1,30 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using JSTest;
 using JSTest.ScriptLibraries;
+using System;
 
 namespace WebPaintAutoTests
 {
     [TestClass]
     public class UnitLogicTestJS
     {
-        static private readonly TestScript _commonTestScript = new TestScript();
+        static private readonly TestScript script = new TestScript();
 
         [ClassInitialize]
         static public void CommonJavaScriptTests(TestContext tc)
         {
-            _commonTestScript.AppendFile(@"E:\XAMPP\htdocs\Tables\PHPDBServer\Reader.js");
-            _commonTestScript.AppendBlock(new JsAssertLibrary());
+            script.AppendFile("calculate.js");
+            script.AppendBlock(new JsAssertLibrary());
         }
 
         [DataTestMethod]
-        [DataRow("JSON", "[{\"id\":\"1\",\"fn\":\"A\",\"ln\":\"B\",\"age\":\"12\"}]")]
-        [DataRow("XML", "<Persons><Person><Id>1</Id><FirstName>A</FirstName><LastName>B</LastName><Age>12</Age></Person></Persons>")]
-        [DataRow("HTML", "<tr><td>1</td><td>A</td><td>B</td><td>12</td></tr></table>")]
-        [DataRow("XSLT", "<Persons><Person><Id>1</Id><FirstName>A</FirstName><LastName>B</LastName><Age>12</Age></Person></Persons>")]
-        [DataRow("YAML", "Persons:\n- Id: 1\n\tFirstName: A\n\tLastName: B\n\tAge: 12")]
-        public void TestCalcJs(string method, string input)
+        [DataRow(1, 2, "+", 3)]
+        [DataRow(2, 3, "-", -1)]
+        [DataRow(4, 5, "*", 20)]
+        [DataRow(8, 4, "/", 2)]
+        public void TestMethod1(int a, int b, string op, int res)
         {
-            string output = "<tr><td>1</td><td>A</td><td>B</td><td>12</td></tr></table>";
-            _commonTestScript.RunTest($"assert.equal('{output}', Factory.getReader('{method}').Read('{input}'));");
+            script.RunTest($"assert.equal({res}, calculate({a}, {b}, '{op}'));");
         }
     }
 }
